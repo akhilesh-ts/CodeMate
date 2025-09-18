@@ -1,42 +1,21 @@
 const express = require("express");
+const { AdminAuth,userAuth } = require("./middleware/Auth");
 
 const app = express();
 
-app.get("/user/:id/:name/:city/:job", (req, res) => {
-  console.log(req.params);
-  res.send({
-    First_Name: "akhilesh",
-    Last_Name: "Ts",
-    City: "Dubai",
-    Job: "Software Engineer",
-  });
+app.use("/admin", AdminAuth);
+
+app.get("/admin/getAllUser", (req, res) => {
+  res.send("user list");
 });
 
-app.get(
-  "/user",
-  (req, res, next) => {
-    // res.send("no user found 1");
-    next()
-  },
-  (req, res,next) => {
-    // res.send("no user found 2");
-    next();
-  }
-  ,
-  (req, res,next) => {
-    // res.send("no user found 2");
-    next();
-  }
-  
-);
-
-app.post("/user", (req, res) => {
-  res.send("Data successfully saved");
+app.get("/admin/deleteUser", (req, res) => {
+  res.send("user delete Sucessfully");
 });
 
-app.delete("/user", (req, res) => {
-  res.send("Deleted Sucessfully deleted");
-});
+app.get('/user/profile',userAuth,(req,res)=>{
+  res.send('user profile')
+})
 
 app.listen(7777, () => {
   console.log("Server running successfully on the server 7777");
