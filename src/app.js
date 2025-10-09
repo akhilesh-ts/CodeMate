@@ -7,6 +7,10 @@ app.use(express.json());
 
 app.post("/signup", async (req, res) => {
   try {
+    if (req.body.skills.length > 10) {
+      throw new Error("skills must be less than 10");
+    }
+
     const user = new User(req.body);
 
     const abc = await user.save();
@@ -56,17 +60,41 @@ app.delete("/deleteuser", async (req, res) => {
   }
 });
 
-app.patch("/update", async (req, res) => {
+app.patch("/update/:userId", async (req, res) => {
   try {
-    const userId = req.body.userId;
+    const ALLOWED_UPDATES = [
+      "firstName",
+      "lastName",
+      "password",
+      "gender",
+      "about",
+      "skills",
+      "age",
+    ];
+    const reqObject = Object.keys(req.body);
+    const isAllowed = reqObject.every((updates) =>
+      ALLOWED_UPDATES.includes(updates)
+    );
+
+    if (!isAllowed) {
+      throw new Error(
+        "some of the fields may not changed once its save.so you tryed to change that fields.. that is the issue"
+      );
+    }
+
+    if (req.body.skills.length > 10) {
+      throw new Error("skills must be less than 10");
+    }
+    const userId = req.params?.userId;
     const data = req.body;
     const userDetails = await User.findByIdAndUpdate({ _id: userId }, data, {
       returnDocument: "after",
     });
 
-    res.send(userDetails);
+    // res.send(userDetails);
+    res.send("successfully updated");
   } catch (error) {
-    res.status(400).send(error, "Something went wrong");
+    res.status(400).send(error.message);
   }
 });
 
