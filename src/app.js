@@ -1,17 +1,32 @@
 const express = require("express");
 const connectDB = require("./config/database.js");
 const User = require("./models/user.js");
+const bcrypt=require('bcrypt')
 
 const app = express();
 app.use(express.json());
 
 app.post("/signup", async (req, res) => {
   try {
+    const {firstName,lastName,email,password,age,gender,photoUrl,about,skills}=req.body
     if (req.body.skills.length > 10) {
       throw new Error("skills must be less than 10");
     }
 
-    const user = new User(req.body);
+    const hashPassword=await bcrypt.hash(password,10)
+
+
+    const user = new User({
+      firstName,
+      lastName,
+      email,
+      password:hashPassword,
+      age,
+      gender,
+      photoUrl,
+      about,
+      skills
+    });
 
     const abc = await user.save();
 

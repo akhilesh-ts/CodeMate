@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
+const validator = require("validator");
 
 const Userschema = new Schema(
   {
@@ -29,17 +30,19 @@ const Userschema = new Schema(
       required: [true, "email is required "],
       lowercase: true,
       trim: true,
-      validate: {
-        validator: (v) =>
-          /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(v),
-        message: (props) => `${props.value} is not a valid email format..`,
+      validate(value) {
+        if (!validator.isEmail(value)) {
+          throw new Error(
+            `${value} is not a correct email address..try another one`
+          );
+        }
       },
     },
     password: {
       type: String,
       required: true,
       minLength: [8, "minimum length shoud be 8"],
-      maxLength: [15, "maximum length should be 15"],
+      // maxLength: [150, "maximum length should be 15"],
       validate: {
         validator: (v) =>
           /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).*$/.test(v),
@@ -67,9 +70,10 @@ const Userschema = new Schema(
       type: String,
       default:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRA6g9BWr61gs6KYIq3zjFEy36Z8OuOIJQ75A&s",
-      validate: {
-        validator: (v) => /^https?:\/\/.+\..+/.test(v),
-        message: (props) => `${props.value} is not a valid URL`,
+      validate(value) {
+        if (!validator.isURL(value)) {
+          throw new Error(`${value} this is not a valid url format`);
+        }
       },
     },
     about: {
