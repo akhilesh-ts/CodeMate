@@ -1,31 +1,41 @@
 const express = require("express");
 const connectDB = require("./config/database.js");
 const User = require("./models/user.js");
-const bcrypt=require('bcrypt')
+const bcrypt = require("bcrypt");
+const validator = require("validator");
 
 const app = express();
 app.use(express.json());
 
 app.post("/signup", async (req, res) => {
   try {
-    const {firstName,lastName,email,password,age,gender,photoUrl,about,skills}=req.body
+    const {
+      firstName,
+      lastName,
+      email,
+      password,
+      age,
+      gender,
+      photoUrl,
+      about,
+      skills,
+    } = req.body;
     if (req.body.skills.length > 10) {
       throw new Error("skills must be less than 10");
     }
 
-    const hashPassword=await bcrypt.hash(password,10)
-
+    const hashPassword = await bcrypt.hash(password, 10);
 
     const user = new User({
       firstName,
       lastName,
       email,
-      password:hashPassword,
+      password: hashPassword,
       age,
       gender,
       photoUrl,
       about,
-      skills
+      skills,
     });
 
     const abc = await user.save();
@@ -34,6 +44,32 @@ app.post("/signup", async (req, res) => {
   } catch (err) {
     res.status(400).send(err.message);
     console.log(err);
+  }
+});
+
+app.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!validator.isEmail(email)) {
+      throw new Error("invalid email or password");
+    }
+    const userDetails = await User.findOne({ email: email });
+    if (!userDetails) {
+      throw new Error("invalid email or password");
+    }
+    const isValidPassword = await bcrypt.compare(
+      password,
+      userDetails.password
+    );
+
+    if (isValidPassword) {
+      res.cookie('sdsssdssdsdsdsds')
+      res.status(200).send("Login successfull");
+    } else {
+      throw new Error("invalid email or password");
+    }
+  } catch (error) {
+    res.status(400).send(error.message);
   }
 });
 
