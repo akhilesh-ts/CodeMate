@@ -3,9 +3,13 @@ const connectDB = require("./config/database.js");
 const User = require("./models/user.js");
 const bcrypt = require("bcrypt");
 const validator = require("validator");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
+const { userAuth } = require("./middleware/Auth.js");
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 
 app.post("/signup", async (req, res) => {
   try {
@@ -63,7 +67,12 @@ app.post("/login", async (req, res) => {
     );
 
     if (isValidPassword) {
-      res.cookie('sdsssdssdsdsdsds')
+      const token = await jwt.sign({ _id: userDetails._id }, "CodeMate@2025", {
+        expiresIn: "7d",
+      });
+      res.cookie("token", token, {
+        expires: new Date(Date.now() + 8 * 3600000),
+      });
       res.status(200).send("Login successfull");
     } else {
       throw new Error("invalid email or password");
@@ -73,81 +82,17 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get("/user", async (req, res) => {
+app.get("/profile", userAuth, async (req, res) => {
   try {
-    const email = req.body.email;
-    const user = await User.findOne({ email: email });
-
-    if (!user) {
-      res.status(404).send("User not found");
-    } else {
-      res.send(user);
-    }
-  } catch (err) {
-    res.status(400).send("Something went wrong");
-  }
-});
-
-app.get("/feed", async (req, res) => {
-  try {
-    const userList = await User.find();
-    console.log(userList);
-    res.send(userList);
-  } catch (err) {
-    console.log(err);
-    res.status(400).send("Something went wrong");
-  }
-});
-
-app.delete("/deleteuser", async (req, res) => {
-  try {
-    const userId = req.body.userId;
-    const response = await User.findByIdAndDelete({ _id: userId });
-    console.log(response);
-    res.send("user deleted successfully");
-  } catch (error) {
-    console.log(error);
-    res.status(400).send("Something went wrong");
-  }
-});
-
-app.patch("/update/:userId", async (req, res) => {
-  try {
-    const ALLOWED_UPDATES = [
-      "firstName",
-      "lastName",
-      "password",
-      "gender",
-      "about",
-      "skills",
-      "age",
-    ];
-    const reqObject = Object.keys(req.body);
-    const isAllowed = reqObject.every((updates) =>
-      ALLOWED_UPDATES.includes(updates)
-    );
-
-    if (!isAllowed) {
-      throw new Error(
-        "some of the fields may not changed once its save.so you tryed to change that fields.. that is the issue"
-      );
-    }
-
-    if (req.body.skills.length > 10) {
-      throw new Error("skills must be less than 10");
-    }
-    const userId = req.params?.userId;
-    const data = req.body;
-    const userDetails = await User.findByIdAndUpdate({ _id: userId }, data, {
-      returnDocument: "after",
-    });
-
-    // res.send(userDetails);
-    res.send("successfully updated");
+    res.send(req.user);
   } catch (error) {
     res.status(400).send(error.message);
   }
 });
+
+app.post('/sendConnectionRequest',userAuth,(req,res)=>{
+  res.send(`${req.user.firstName} is sending the connection request`)
+})
 
 connectDB()
   .then(() => {
