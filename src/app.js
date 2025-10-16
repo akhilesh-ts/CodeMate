@@ -61,15 +61,11 @@ app.post("/login", async (req, res) => {
     if (!userDetails) {
       throw new Error("invalid email or password");
     }
-    const isValidPassword = await bcrypt.compare(
-      password,
-      userDetails.password
-    );
+    const isValidPassword = await userDetails.ValidatePassword(password);
 
     if (isValidPassword) {
-      const token = await jwt.sign({ _id: userDetails._id }, "CodeMate@2025", {
-        expiresIn: "7d",
-      });
+      const token = await userDetails.getJWT();
+
       res.cookie("token", token, {
         expires: new Date(Date.now() + 8 * 3600000),
       });
@@ -90,9 +86,9 @@ app.get("/profile", userAuth, async (req, res) => {
   }
 });
 
-app.post('/sendConnectionRequest',userAuth,(req,res)=>{
-  res.send(`${req.user.firstName} is sending the connection request`)
-})
+app.post("/sendConnectionRequest", userAuth, (req, res) => {
+  res.send(`${req.user.firstName} is sending the connection request`);
+});
 
 connectDB()
   .then(() => {
