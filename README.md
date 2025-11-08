@@ -2,3 +2,4 @@
 
 -add rate limit in login
 -add dummy hashing 
+-create schema method for password hasing

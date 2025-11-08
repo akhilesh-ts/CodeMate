@@ -5,7 +5,7 @@
 
 ## profile
 - GET /profile
-- PATCH /profile
+- PATCH /profile/edit
 - PATCH /forgotPassword
 
 ## connection request
@@ -17,6 +17,8 @@
 
 ## user
 
+- GET /user/request/received   -get the request the other user send to you
+- GET /user/connection - get all the connection of the user
+
 - GET /user/feed -get all the profiles card
-- GET /user/connection -get all the connection request
-- GET /user/request -get the request the other user send to you
+
