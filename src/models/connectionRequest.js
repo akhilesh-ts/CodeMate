@@ -1,26 +1,29 @@
 const { model, Schema } = require("mongoose");
-const user=require('../models/user')
+const user = require("../models/user");
 
-const connectionRequestSchema = new Schema({
-  fromUserId: {
-    type: Schema.Types.ObjectId,
-    required: true,
-    ref:user
-  },
-  toUserId: {
-    type: Schema.Types.ObjectId,
-    required: true,
-    ref:user
-  },
-  status: {
-    type: String,
-    required: true,
-    enum: {
-      values: ["Interested", "Accepted", "Ignore", "Rejected"],
-      message: "{VALUE} is not valid status",
+const connectionRequestSchema = new Schema(
+  {
+    fromUserId: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "User",
+    },
+    toUserId: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "User",
+    },
+    status: {
+      type: String,
+      required: true,
+      enum: {
+        values: ["Interested", "Accepted", "Ignore", "Rejected"],
+        message: "{VALUE} is not valid status",
+      },
     },
   },
-});
+  { timestamps: true }
+);
 
 connectionRequestSchema.index({ fromUserId: 1, toUserId: 1 });
 
@@ -33,4 +36,4 @@ connectionRequestSchema.pre("save", function (next) {
   next();
 });
 
-module.exports = model("Connection Request", connectionRequestSchema);
+module.exports = model("ConnectionRequest", connectionRequestSchema);

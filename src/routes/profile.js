@@ -6,9 +6,8 @@ const User = require("../models/user");
 const bcrypt = require("bcrypt");
 
 const profileRouter = express.Router();
-profileRouter.get("/profile", userAuth, (req, res) => {
+profileRouter.get("/profile/view", userAuth, (req, res) => {
   try {
-    console.log("profile called");
     res.send(req.user);
   } catch (error) {
     res.status(400).send(error.message);
@@ -21,6 +20,7 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
     const LoggedInUser = req.user;
     Object.keys(req.body).forEach((key) => (LoggedInUser[key] = req.body[key]));
 
+    
     await LoggedInUser.save();
 
     res.json({

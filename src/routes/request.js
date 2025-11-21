@@ -12,13 +12,16 @@ requestRoute.post(
     try {
       const user = req.user._id.toString();
       const { status, userId } = req.params;
+
+
+
       const isAllowedStatus = ["Interested", "Ignore"];
 
       if (!isAllowedStatus.includes(status)) {
         throw new Error("Status  should be Interested or Ignore");
       }
       const isToUserExist = await User.findById(userId);
-      
+
       if (!isToUserExist) {
         throw new Error("User not found");
       }
@@ -42,7 +45,7 @@ requestRoute.post(
 
       await NewConnectoinRequest.save();
 
-      res.json({
+      res.status(200).json({
         message: "successfully send connection request",
         NewConnectoinRequest,
       });

@@ -4,7 +4,7 @@ const userAuth = async (req, res, next) => {
   try {
     const { token } = req.cookies;
     if (!token) {
-      throw new Error("please login to continue..");
+      return res.status(401).json({message:"please login to continue..."})
     }
     const { _id } = jwt.verify(token, "CodeMate@2025");
     const currentUser = await User.findById(_id);

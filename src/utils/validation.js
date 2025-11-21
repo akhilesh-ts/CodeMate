@@ -10,8 +10,8 @@ const validateEditField = (userInput) => {
   ];
   const invalidFields = Object.keys(userInput).filter(
     (fields) => !allowedFieldsToEdit.includes(fields)
-  );
-
+  )
+  
   if (invalidFields.length > 0) {
     throw new Error(`you cannot edit this fields ${invalidFields} `);
   }
