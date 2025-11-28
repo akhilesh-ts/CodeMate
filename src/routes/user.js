@@ -28,6 +28,7 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
   try {
     const loggedInUser = req.user;
 
+    
     const connectionRequests = await connectionRequest
       .find({
         $or: [

@@ -7,38 +7,23 @@ const authRouter = express.Router();
 
 authRouter.post("/signup", async (req, res) => {
   try {
-    const {
-      firstName,
-      lastName,
-      email,
-      password,
-      age,
-      gender,
-      photoUrl,
-      about,
-      skills,
-    } = req.body;
-    if (req.body.skills.length > 10) {
-      throw new Error("skills must be less than 10");
+    const { firstName, email, password } = req.body.formData;
+
+    if (validator.isEmail(email)) {
+      throw new Error("email is not valid");
     }
 
     const hashPassword = await bcrypt.hash(password, 10);
 
     const user = new User({
       firstName,
-      lastName,
       email,
       password: hashPassword,
-      age,
-      gender,
-      photoUrl,
-      about,
-      skills,
     });
 
-    const abc = await user.save();
+    await user.save();
 
-    res.send("user saved successfully on the databse");
+    res.status(201).send("user saved successfully on the databse");
   } catch (err) {
     res.status(400).send(err.message);
     console.log(err);

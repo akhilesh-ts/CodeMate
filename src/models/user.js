@@ -20,7 +20,7 @@ const Userschema = new Schema(
       type: String,
       minLength: [2, "minimum length should be 2"],
       maxLength: [5, "maximum length should be 5"],
-      required: [true, "lastname is required"],
+      // required: [true, "lastname is required"],
       validate: {
         validator: (v) => /^[A-Za-z0-9]+$/.test(v),
         message: (props) => `${props.value} is not a valid lastname`,
@@ -53,7 +53,7 @@ const Userschema = new Schema(
     },
     age: {
       type: Number,
-      required: [true, "age is required"],
+      // required: [true, "age is required"],
       min: [18, "age should be greater than 18"],
       validate: {
         validator: (v) => /^(?:[1-9]|[1-9][0-9]|1[01][0-9]|120)$/.test(v),
@@ -84,7 +84,7 @@ const Userschema = new Schema(
       maxLength: [250, "about section can be maximum 250 characters"],
     },
     skills: {
-      required: true,
+      // required: true,
       type: [String],
     },
   },
