@@ -5,7 +5,7 @@ const User = require("../models/user");
 
 const userRouter = express.Router();
 
-const USER_SAFE_DATA = "firstName lastName photoUrl age gender about skills";
+const USER_SAFE_DATA = "firstName lastName photoUrl age gender about skills title";
 
 userRouter.get("/user/request/received", userAuth, async (req, res) => {
   try {
@@ -28,7 +28,6 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
   try {
     const loggedInUser = req.user;
 
-    
     const connectionRequests = await connectionRequest
       .find({
         $or: [

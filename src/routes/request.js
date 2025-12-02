@@ -2,6 +2,7 @@ const express = require("express");
 const { userAuth } = require("../middleware/Auth");
 const connectionRequest = require("../models/connectionRequest");
 const User = require("../models/user");
+const sendEmail = require("../utils/sendEmail");
 
 const requestRoute = express.Router();
 
@@ -12,8 +13,6 @@ requestRoute.post(
     try {
       const user = req.user._id.toString();
       const { status, userId } = req.params;
-
-
 
       const isAllowedStatus = ["Interested", "Ignore"];
 
@@ -44,12 +43,14 @@ requestRoute.post(
       });
 
       await NewConnectoinRequest.save();
+      const email_res = await sendEmail.run();
 
       res.status(200).json({
         message: "successfully send connection request",
         NewConnectoinRequest,
       });
     } catch (error) {
+      console.error("EMAIL ROUTE ERROR:", error);
       res.status(400).json({ message: error.message });
     }
   }

@@ -18,6 +18,7 @@ const Userschema = new Schema(
     },
     lastName: {
       type: String,
+      default: null,
       minLength: [2, "minimum length should be 2"],
       maxLength: [5, "maximum length should be 5"],
       // required: [true, "lastname is required"],
@@ -51,9 +52,15 @@ const Userschema = new Schema(
         message: (props) => `${props.value} is not a valid format`,
       },
     },
+    title: {
+      type: String,
+      required: [true, "title is required"],
+      max: [20, "maximum should be 20"],
+    },
     age: {
       type: Number,
       // required: [true, "age is required"],
+
       min: [18, "age should be greater than 18"],
       validate: {
         validator: (v) => /^(?:[1-9]|[1-9][0-9]|1[01][0-9]|120)$/.test(v),
@@ -63,6 +70,7 @@ const Userschema = new Schema(
     gender: {
       type: String,
       lowercase: true,
+      default: null,
       enum: {
         values: ["male", "female", "others"],
         message: "{VALUE} is not supported",

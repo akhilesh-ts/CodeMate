@@ -1,3 +1,4 @@
+require("dotenv").config({ path: __dirname + "/../.env" });
 const express = require("express");
 const connectDB = require("./config/database.js");
 const cookieParser = require("cookie-parser");
@@ -6,6 +7,7 @@ const authRouter = require("./routes/auth.js");
 const profileRouter = require("./routes/profile.js");
 const requestRoute = require("./routes/request.js");
 const userRouter = require("./routes/user.js");
+require('./utils/scheduleEmail.js')
 
 const app = express();
 app.use(

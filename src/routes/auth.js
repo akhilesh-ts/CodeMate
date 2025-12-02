@@ -7,9 +7,9 @@ const authRouter = express.Router();
 
 authRouter.post("/signup", async (req, res) => {
   try {
-    const { firstName, email, password } = req.body.formData;
+    const { firstName, email, password, title } = req.body.formData;
 
-    if (validator.isEmail(email)) {
+    if (!validator.isEmail(email)) {
       throw new Error("email is not valid");
     }
 
@@ -19,6 +19,7 @@ authRouter.post("/signup", async (req, res) => {
       firstName,
       email,
       password: hashPassword,
+      title,
     });
 
     await user.save();
