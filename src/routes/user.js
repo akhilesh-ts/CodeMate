@@ -16,7 +16,7 @@ userRouter.get("/user/request/received", userAuth, async (req, res) => {
         toUserId: loggedInUser._id,
         status: "Interested",
       })
-      .populate("fromUserId", ["firstName", "lastName", "about", "age"]);
+      .populate("fromUserId", ["firstName", "lastName", "about", "age","title"]);
 
     res.send(receivedRequest);
   } catch (error) {

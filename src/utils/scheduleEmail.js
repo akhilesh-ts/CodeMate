@@ -5,13 +5,11 @@ const {run} =require('../utils/sendEmail')
 
 const yesterday = subDays(new Date(), 1);
 
-console.log("yesterday", yesterday);
+
 
 const startOfYesterday = startOfDay(yesterday);
 const endOfYesterday = endOfDay(new Date());
 
-console.log("startday", startOfYesterday);
-console.log("endyesterdat", endOfYesterday);
 
 corn.schedule("0 8 * * *", async () => {
   const pendingRequests = await connectionRequest.find({
